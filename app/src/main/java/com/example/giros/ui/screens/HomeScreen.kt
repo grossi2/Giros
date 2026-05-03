@@ -21,6 +21,7 @@ import com.example.giros.ui.theme.GirosTheme
 fun HomeScreen(
     onCreateWheelClick: () -> Unit,
     onViewWheelsClick: () -> Unit,
+    onAboutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -74,6 +75,13 @@ fun HomeScreen(
                 Text("Mis ruedas")
             }
         }
+
+        Button(
+            onClick = onAboutClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Acerca de")
+        }
     }
 }
 
@@ -83,7 +91,8 @@ private fun HomeScreenPreview() {
     GirosTheme {
         HomeScreen(
             onCreateWheelClick = {},
-            onViewWheelsClick = {}
+            onViewWheelsClick = {},
+            onAboutClick = {}
         )
     }
 }

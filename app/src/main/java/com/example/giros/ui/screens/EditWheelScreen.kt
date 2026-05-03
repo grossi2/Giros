@@ -3,11 +3,12 @@ package com.example.giros.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ fun EditWheelScreen(
     modifier: Modifier = Modifier
 ) {
     val isEditing = uiState.editingWheelId != null
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
@@ -42,88 +44,97 @@ fun EditWheelScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = if (isEditing) "Editar rueda" else "Nueva rueda",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = if (isEditing) {
-                "Actualizá el nombre y las opciones de esta rueda."
-            } else {
-                "Definí el nombre de la rueda y cargá al menos dos opciones para empezar."
-            },
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        OutlinedTextField(
-            value = uiState.wheelName,
-            onValueChange = onWheelNameChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Nombre de la rueda") },
-            singleLine = true
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Text(
+                text = if (isEditing) "Editar rueda" else "Nueva rueda",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = if (isEditing) {
+                    "Actualizá el nombre y las opciones de esta rueda."
+                } else {
+                    "Definí el nombre de la rueda y cargá al menos dos opciones para empezar."
+                },
+                style = MaterialTheme.typography.bodyLarge
+            )
+
             OutlinedTextField(
-                value = uiState.optionDraft,
-                onValueChange = onOptionDraftChange,
-                modifier = Modifier.weight(1f),
-                label = { Text("Nueva opción") },
+                value = uiState.wheelName,
+                onValueChange = onWheelNameChange,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Nombre de la rueda") },
                 singleLine = true
             )
 
-            Button(
-                onClick = onAddOptionClick,
-                modifier = Modifier.padding(top = 8.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Agregar")
-            }
-        }
-
-        if (uiState.validationMessage != null) {
-            Text(
-                text = uiState.validationMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "Opciones cargadas (${uiState.options.size})",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                OutlinedTextField(
+                    value = uiState.optionDraft,
+                    onValueChange = onOptionDraftChange,
+                    modifier = Modifier.weight(1f),
+                    label = { Text("Nueva opción") },
+                    singleLine = true
                 )
 
-                if (uiState.options.isEmpty()) {
+                Button(
+                    onClick = onAddOptionClick,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text("Agregar")
+                }
+            }
+
+            if (uiState.validationMessage != null) {
+                Text(
+                    text = uiState.validationMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Text(
-                        text = "Todavía no agregaste opciones.",
-                        color = Color.Gray
+                        text = "Opciones cargadas (${uiState.options.size})",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
                     )
-                } else {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(uiState.options, key = { it.id }) { option ->
-                            OptionRow(
-                                option = option,
-                                onRemoveClick = { onRemoveOptionClick(option.id) }
-                            )
+
+                    if (uiState.options.isEmpty()) {
+                        Text(
+                            text = "Todavía no agregaste opciones.",
+                            color = Color.Gray
+                        )
+                    } else {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            uiState.options.forEach { option ->
+                                OptionRow(
+                                    option = option,
+                                    onRemoveClick = { onRemoveOptionClick(option.id) }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+
+        Spacer(modifier = Modifier.weight(0.02f))
 
         Row(
             modifier = Modifier.fillMaxWidth(),

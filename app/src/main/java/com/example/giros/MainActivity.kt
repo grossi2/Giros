@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.giros.data.WheelRepository
 import com.example.giros.data.WheelStorage
+import com.example.giros.ui.screens.AboutScreen
 import com.example.giros.ui.screens.HomeScreen
 import com.example.giros.ui.screens.EditWheelScreen
 import com.example.giros.ui.screens.SpinScreen
@@ -25,6 +26,7 @@ import com.example.giros.viewmodel.WheelViewModel
 
 private enum class GirosScreen {
     Home,
+    About,
     EditWheel,
     WheelList,
     Spin
@@ -55,6 +57,18 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onViewWheelsClick = {
                                     currentScreen = GirosScreen.WheelList
+                                },
+                                onAboutClick = {
+                                    currentScreen = GirosScreen.About
+                                },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
+
+                        GirosScreen.About -> {
+                            AboutScreen(
+                                onBackClick = {
+                                    currentScreen = GirosScreen.Home
                                 },
                                 modifier = Modifier.padding(innerPadding)
                             )
